@@ -9,14 +9,12 @@ from inmuebleslist_app.api.views import (
     ComentariosDetail,
     ComentariosCreate,
     EmpresaVS,
-    LogoutView
 )
 
 router = routers.DefaultRouter()
 router.register("empresa", EmpresaVS, basename="empresa")
 
 urlpatterns = [
-    path('logout/', LogoutView.as_view(), name='api_auth_logout'),
     path("inmueble/", InmueblesListAV.as_view(), name="inmueble-list"),
     path("inmueble/<int:pk>", InmuebleDetallesAV.as_view(), name="inmueble-detail "),
     path("", include(router.urls)),

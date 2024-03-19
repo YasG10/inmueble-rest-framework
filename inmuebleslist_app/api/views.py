@@ -14,13 +14,6 @@ from django.contrib.auth import logout
 from inmuebleslist_app.api.permissions import AdminOrReadOnly, ComentarioUserOrReadOnly
 
 
-class LogoutView(APIView):
-
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return Response({"detail": "saliste de la session."}, status=status.HTTP_200_OK)
-
-
 class ComentariosCreate(generics.CreateAPIView):
 
     serializer_class = SR.ComentarioSerializer
@@ -58,6 +51,7 @@ class ComentariosCreate(generics.CreateAPIView):
 class ComentariosList(generics.ListCreateAPIView):
     serializer_class = SR.ComentarioSerializer
     permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         pk = self.kwargs["pk"]
         return Comentario.objects.filter(inmueble=pk)
