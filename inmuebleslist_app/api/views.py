@@ -11,12 +11,16 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
-from inmuebleslist_app.api.permissions import AdminOrReadOnly, ComentarioUserOrReadOnly
+from inmuebleslist_app.api.permissions import (
+    IsAdminOrReadOnly,
+    IsComentarioUserOrReadOnly,
+)
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 
 class ComentariosCreate(generics.CreateAPIView):
-
     serializer_class = SR.ComentarioSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Comentario.objects.all()
@@ -50,8 +54,8 @@ class ComentariosCreate(generics.CreateAPIView):
 
 class ComentariosList(generics.ListCreateAPIView):
     serializer_class = SR.ComentarioSerializer
-    permission_classes = [IsAuthenticated]
-
+    # permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     def get_queryset(self):
         pk = self.kwargs["pk"]
         return Comentario.objects.filter(inmueble=pk)
@@ -60,7 +64,8 @@ class ComentariosList(generics.ListCreateAPIView):
 class ComentariosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comentario.objects.all()
     serializer_class = SR.ComentarioSerializer
-    permission_classes = [ComentarioUserOrReadOnly]
+    permission_classes = [IsComentarioUserOrReadOnly]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
 
 """class ComentariosList(
@@ -86,7 +91,7 @@ class CometariosDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
 
 class EmpresaVS(viewsets.ModelViewSet):
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Empresa.objects.all()
     serializer_class = SR.EmpresaSerializer
 
@@ -200,6 +205,7 @@ class EmpresaDetalleAV(APIView):
 
 
 class InmueblesListAV(APIView):
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request):
         inmuebles = Inmueble.objects.all()
@@ -216,6 +222,7 @@ class InmueblesListAV(APIView):
 
 
 class InmuebleDetallesAV(APIView):
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request, pk):
         try:
