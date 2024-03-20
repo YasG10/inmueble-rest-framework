@@ -15,12 +15,21 @@ from inmuebleslist_app.api.permissions import (
     IsAdminOrReadOnly,
     IsComentarioUserOrReadOnly,
 )
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from rest_framework.throttling import (
+    UserRateThrottle,
+    AnonRateThrottle,
+    ScopedRateThrottle,
+)
+from inmuebleslist_app.api.throttling import (
+    ComentarioCreateThrottle,
+    ComentarioListThrottle,
+)
 
 
 class ComentariosCreate(generics.CreateAPIView):
     serializer_class = SR.ComentarioSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [ComentarioCreateThrottle]
 
     def get_queryset(self):
         return Comentario.objects.all()
@@ -55,7 +64,8 @@ class ComentariosCreate(generics.CreateAPIView):
 class ComentariosList(generics.ListCreateAPIView):
     serializer_class = SR.ComentarioSerializer
     # permission_classes = [IsAuthenticated]
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    throttle_classes = [ComentarioListThrottle]
+
     def get_queryset(self):
         pk = self.kwargs["pk"]
         return Comentario.objects.filter(inmueble=pk)
@@ -65,7 +75,8 @@ class ComentariosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comentario.objects.all()
     serializer_class = SR.ComentarioSerializer
     permission_classes = [IsComentarioUserOrReadOnly]
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'comentario-detail'
 
 
 """class ComentariosList(
