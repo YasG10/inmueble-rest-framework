@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "user_app",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "inmuebles.wsgi.application"
+
+AUTH_USER_MODEL = 'user_app.Account'
 
 
 # Database
@@ -143,11 +146,11 @@ REST_FRAMEWORK = {
     #    "rest_framework.throttling.UserRateThrottle",
     # ],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": "5/day",
-        "user": "10/day",
-        "comentario-create": "2/day",
-        "comentario-list": "8/day",  
-        "comentario-detail": "3/day", 
+        "anon": "50000/day",
+        "user": "1000000/day",
+        "comentario-create": "20000/day",
+        "comentario-list": "800000/day",
+        "comentario-detail": "3000000/day",
     },
 }
 

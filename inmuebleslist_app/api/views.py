@@ -24,19 +24,20 @@ from inmuebleslist_app.api.throttling import (
     ComentarioCreateThrottle,
     ComentarioListThrottle,
 )
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 class UsuarioComentario(generics.ListAPIView):
     serializer_class = SR.ComentarioSerializer
-    
+
     """def get_queryset(self):
         username = self.kwargs['username']
         return Comentario.objects.filter(comentario_user__username=username)"""
-    
+
     def get_queryset(self):
-        username = self.request.query_params.get('username', None)
+        username = self.request.query_params.get("username", None)
         return Comentario.objects.filter(comentario_user__username=username)
-        
 
 
 class ComentariosCreate(generics.CreateAPIView):
@@ -78,6 +79,8 @@ class ComentariosList(generics.ListCreateAPIView):
     serializer_class = SR.ComentarioSerializer
     # permission_classes = [IsAuthenticated]
     throttle_classes = [ComentarioListThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["comentario_user__username", "active"]
 
     def get_queryset(self):
         pk = self.kwargs["pk"]
@@ -89,7 +92,7 @@ class ComentariosDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SR.ComentarioSerializer
     permission_classes = [IsComentarioUserOrReadOnly]
     throttle_classes = [ScopedRateThrottle]
-    throttle_scope = 'comentario-detail'
+    throttle_scope = "comentario-detail"
 
 
 """class ComentariosList(
@@ -226,6 +229,13 @@ class EmpresaDetalleAV(APIView):
             )
         empresa.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class InmuebleList(generics.ListAPIView):
+    queryset = Inmueble.objects.all()
+    serializer_class = SR.InmuebleSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["direccion", "empresa__nombre"]
 
 
 class InmueblesListAV(APIView):
