@@ -42,7 +42,7 @@ class UsuarioComentario(generics.ListAPIView):
 
 class ComentariosCreate(generics.CreateAPIView):
     serializer_class = SR.ComentarioSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     throttle_classes = [ComentarioCreateThrottle]
 
     def get_queryset(self):
@@ -90,7 +90,7 @@ class ComentariosList(generics.ListCreateAPIView):
 class ComentariosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comentario.objects.all()
     serializer_class = SR.ComentarioSerializer
-    permission_classes = [IsComentarioUserOrReadOnly]
+    #permission_classes = [IsComentarioUserOrReadOnly]
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "comentario-detail"
 
@@ -118,7 +118,7 @@ class CometariosDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
 
 class EmpresaVS(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrReadOnly]
+    #permission_classes = [IsAdminOrReadOnly]
     queryset = Empresa.objects.all()
     serializer_class = SR.EmpresaSerializer
 
@@ -239,7 +239,7 @@ class InmuebleList(generics.ListAPIView):
 
 
 class InmueblesListAV(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    #permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request):
         inmuebles = Inmueble.objects.all()
@@ -256,7 +256,7 @@ class InmueblesListAV(APIView):
 
 
 class InmuebleDetallesAV(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    #permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request, pk):
         try:
